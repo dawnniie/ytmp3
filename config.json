@@ -1,0 +1,13 @@
+{
+    "port": 8080,
+    "db": "json",
+    "maxsize": 10000000000,
+    "autodelete": {
+        "xsmall": 336,
+        "small": 168,
+        "medium": 24,
+        "large": 12,
+        "xlarge": 1,
+        "incomplete": 24
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "ytmp3",
+  "version": "1.0.0",
+  "description": "youtube to mp3 converter",
+  "main": "index.js",
+  "author": "Lachlan Walls",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "node-json-db": "^1.1.0",
+    "rethinkdb": "^2.4.2",
+    "ytdl-core": "^2.1.7"
+  }
+}
