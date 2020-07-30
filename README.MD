@@ -52,6 +52,7 @@ autodelete.medium | 24 | autodelete time for medium sized files (hours)
 autodelete.large | 12 | autodelete time for large sized files (hours)
 autodelete.xlarge | 1 | autodelete time for xlarge sized files (hours)
 autodelete.xsmall | 24 | autodelete time for incomplete conversions (hours)
+maxsize | 10000000000 | maximum size for conversions
 
 ## Databases
 
