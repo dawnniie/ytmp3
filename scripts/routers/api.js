@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const ytdl = require('ytdl-core')
 
-const proc_pi = require('./pipe')
+const proc_pi = require('../pipe')
 
 // a function is used so that we can provide routers with database and config access
 module.exports = (config, db) => {
