@@ -312,10 +312,6 @@ body {
   float: right;
 }
 
-#progress div[status="disabled"] {
-  opacity: 0.4;
-}
-
 #progress div[status="loading"] p:after {
   overflow: hidden;
   display: inline-block;

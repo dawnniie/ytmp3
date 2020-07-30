@@ -3,8 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const ytdl = require('ytdl-core')
 
-const proc_dl = require('../processing/download')
-const proc_cb = require('../processing/combine')
+const proc_pi = require('./pipe')
 
 // a function is used so that we can provide routers with database and config access
 module.exports = (config, db) => {
@@ -48,10 +47,13 @@ module.exports = (config, db) => {
             return br * len / 8
         }
 
-        let totalsize = 0
-        if (aitag) totalsize += getSize(ainfo)
-        if (vitag) totalsize += getSize(vinfo)
-        if (totalsize > config.maxsize) return res.send({"err": "conversion-too-big"})
+        let sizes = {}
+        if (aitag) sizes.a = getSize(ainfo)
+        if (vitag) sizes.v = getSize(vinfo)
+        if (aitag && vitag) sizes.total = sizes.a + sizes.v
+        else sizes.total = sizes.a || sizes.v
+
+        if (sizes.total > config.maxsize) return res.send({"err": "conversion-too-big"})
 
         let type = ((aitag) ? 'a':'') + ((vitag) ? 'v':'')
 
@@ -69,32 +71,23 @@ module.exports = (config, db) => {
 
         let cpath = path.join(__dirname, '../../') + '/' + config.cachedir
         if (!fs.existsSync(cpath)) fs.mkdirSync(cpath)
-        fs.mkdirSync(cpath + '/' + id)
+        let vpath = cpath + '/' + id
+        fs.mkdirSync(vpath)
 
-        let apath = (aitag) ? `${cpath}/${id}/AUD.${ainfo.container}`:''
-        let vpath = (vitag) ? `${cpath}/${id}/VID.${vinfo.container}`:''
-
-        if (aitag) {
-            await db.update(id, {status: 'downloading-audio'})
-            await proc_dl(url, aitag, apath)
-        }
-
-        if (vitag) {
-            await db.update(id, {status: 'downloading-video'})
-            await proc_dl(url, vitag, vpath)
-        }
+        let smallest = 'a'
+        if (aitag && vitag) smallest = (sizes.a < sizes.v) ? 'a' : 'v'
 
         await db.update(id, {status: 'processing'})
 
-        let fpath = await proc_cb(cpath + '/' + id, dat.title, Boolean(aitag), Boolean(vitag))
+        let fpath = await proc_pi(url, vpath + '/', dat.title, aitag, vitag, smallest)
         let size = fs.statSync(fpath).size
         fpath = '/dl' + fpath.split(config.cachedir)[1]
 
         await db.update(id, {status: 'complete', dlurl: fpath, size: size})
 
-        fs.readdirSync(cpath + '/' + id)
-        .filter(f => f.includes('AUD') || f.includes('VID'))
-        .forEach(f => fs.unlinkSync(cpath + '/' + id + '/' + f))
+        fs.readdirSync(vpath)
+        .filter(f => f.includes('SMALL'))
+        .forEach(f => fs.unlinkSync(vpath + '/' + f))
     })
 
     router.post('/dl/:id', async(req, res) => {

@@ -131,13 +131,4 @@ document.querySelector("#download").onclick = async() => {
         alert("Sorry, something went wrong preparing your video! " + JSON.stringify(res))
         window.location = window.location
     } else location.assign('/c/' + res.id)
-
-    document.querySelector("#download").removeAttribute("show")
-    document.querySelector("#downloadv").addEventListener('click', () => location.assign(final.path))
-    document.querySelector("#downloadv").setAttribute("show", "")
-
-    document.querySelector("#options>.audio").removeAttribute("show")
-    document.querySelector("#options>.video").removeAttribute("show")
-    document.querySelector("#vidinfo").removeAttribute("show")
-    document.querySelector("#content").removeAttribute("up")
 }
