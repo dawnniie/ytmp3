@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "youtube to mp3 converter",
   "main": "index.js",
-  "author": "Lachlan Walls",
+  "author": "eeehh <eeehhdev@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
